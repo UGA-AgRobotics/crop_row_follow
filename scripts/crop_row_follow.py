@@ -1,4 +1,5 @@
 import cv2
+import numpy as np
 from matplotlib import pyplot as plt
 
 image = cv2.imread('../img/peanut_high.jpg', cv2.IMREAD_COLOR)
@@ -17,6 +18,26 @@ img_and = cv2.bitwise_and(u_thresh, v_thresh)
 
 edges = cv2.Canny(img_and, 10, 50, 2, L2gradient=True)
 
+lines = cv2.HoughLines(edges, 1, np.pi / 180, 120)
+for x in range(0, len(lines)):
+    for rho, theta in lines[x]:
+        a = np.cos(theta)
+        b = np.sin(theta)
+        x0 = a * rho
+        y0 = b * rho
+        x1 = int(x0 + 1000 * (-b))
+        y1 = int(y0 + 1000 * (a))
+        x2 = int(x0 - 1000 * (-b))
+        y2 = int(y0 - 1000 * (a))
+
+        cv2.line(image, (x1, y1), (x2, y2), (255, 0, 0), 10)
+
+# minLineLength = 500
+# maxLineGap = 500
+# lines = cv2.HoughLinesP(img_and, 1, np.pi / 180, 1500, minLineLength, maxLineGap)
+# for x in range(0, len(lines)):
+#     for x1, y1, x2, y2 in lines[x]:
+#         cv2.line(image, (x1, y1), (x2, y2), (255, 0, 0), 10)
 # plt.subplot(231)
 # plt.title("U Gauss Blur")
 # plt.imshow(u_blur, cmap='gray')
@@ -33,12 +54,12 @@ edges = cv2.Canny(img_and, 10, 50, 2, L2gradient=True)
 # plt.title("V Otsu Threshold")
 # plt.imshow(v_thresh, cmap='gray')
 
-# plt.subplot(121)
-# plt.title("U & V")
-# plt.imshow(img_and, cmap='gray')
-#
 # plt.subplot(122)
-plt.title("Edges")
-plt.imshow(edges, cmap='gray')
+plt.title("Lines")
+plt.imshow(image)
+
+# plt.subplot(121)
+# plt.title("Edges")
+# plt.imshow(edges, cmap='gray')
 
 plt.show()
