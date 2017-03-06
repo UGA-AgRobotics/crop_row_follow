@@ -2,11 +2,9 @@
 Crop row following system?
 
 #Abstract
-
-##Porblem
+###Porblem
 Robot uses GPS for navigation. This is not realible. To much work to draw full path in crop rows.
-
-##Solution
+###Solution
 Make CV system that allows robot to line up and follow crop rows.
 
 #Problem Statement
