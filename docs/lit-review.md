@@ -1,5 +1,5 @@
 #Handbook of Robotics Second ed
-##Ch 56
+##56
 The introduction in this chapter covers most of the important motivations for robotics in agriculture. First is defines ag.
 >In this chapter, agriculture is understood as in the Merriam-Webster definition:
 the science, art, or practice of cultivating the soil, producing crops, and raising livestock and in vary- ing degrees the preparation and marketing of the resulting products.
@@ -9,9 +9,17 @@ It goes on to define the term crop.
 
 This is a very important disinction as many people thing of just plants as a "crop".  
 
-Also the fmous line for the United nations is used.
+Also the famous line for the United Nations is used.
 >Scientists predict that agricultural production must double to meet the demands of nine billion people in 2050 [56.1–3].
 
+###56.2
+This subsection covers the chalanges that robotics is facing as it pertains to agriculture. One of the challenges is auto guidance on the field. This is defined as the abilty of a machine to manuver a field with out damage to the crops. The imporance of autonavition is mentioned here.
+>More recently, auto-guidance has started to migrate to orchard vehicles as well, albeit here other navigation sensors may be required because of poor satellite reception under thick canopies
+
+This defends the importance to navigation means that are not fixed to GNSS. Also the author talks of the big problems with auto navigation sensors. Saying
+>In general, robotic mobility technology is currently less advanced than sensing.
+
+Sensing here talks about the crops state not the robots localization.
 
 
 ##Important refs
