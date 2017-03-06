@@ -8,6 +8,8 @@ Robot uses GPS for navigation. This is not realible. To much work to draw full p
 Make CV system that allows robot to line up and follow crop rows.
 
 #Problem Statement
+###Background
+
 
 #Research Plan
 
