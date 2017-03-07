@@ -60,3 +60,7 @@ This was the case study of a automated weeding system for potatos. The important
 ---
 
 #[Machine vision row crop detection using blob analysis and the hough transform](https://elibrary.asabe.org/abstract.asp?aid=10022&t=2&redir=&redirType=)
+
+---
+
+#[Crop-row detection algorithm based on Random Hough Transformation](http://www.sciencedirect.com/science/article/pii/S0895717710005212)
