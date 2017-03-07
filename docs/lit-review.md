@@ -52,3 +52,8 @@ This was the case study of a automated weeding system for potatos. The important
 ---
 
 #[Determination of crop rows by image analysis without segmentation](http://www.sciencedirect.com/science/article/pii/S0168169902001400)
+
+---
+
+#[Crop Row Tracking by an Autonomous Vehicle
+Using Machine Vision (part 1)](https://www.jstage.jst.go.jp/article/jsam1937/62/2/62_2_41/_pdf)
