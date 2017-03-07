@@ -56,3 +56,7 @@ This was the case study of a automated weeding system for potatos. The important
 ---
 
 #[Crop Row Tracking by an Autonomous VehicleUsing Machine Vision](https://www.jstage.jst.go.jp/article/jsam1937/62/2/62_2_41/_pdf)
+
+---
+
+#[Machine vision row crop detection using blob analysis and the hough transform](https://elibrary.asabe.org/abstract.asp?aid=10022&t=2&redir=&redirType=)
