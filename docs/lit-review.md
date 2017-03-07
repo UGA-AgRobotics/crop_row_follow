@@ -48,3 +48,7 @@ This was the case study of a automated weeding system for potatos. The important
 ---
 
 #[Crop-row detection using Hough transform based on connected component labeling](https://dl.sciencesocieties.org/publications/tcsae/abstracts/2007/3/2007.3.030)
+
+---
+
+#(Determination of crop rows by image analysis without segmentation)[http://www.sciencedirect.com/science/article/pii/S0168169902001400]
