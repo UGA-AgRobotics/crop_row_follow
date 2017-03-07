@@ -55,5 +55,4 @@ This was the case study of a automated weeding system for potatos. The important
 
 ---
 
-#[Crop Row Tracking by an Autonomous Vehicle
-Using Machine Vision](https://www.jstage.jst.go.jp/article/jsam1937/62/2/62_2_41/_pdf)
+#[Crop Row Tracking by an Autonomous VehicleUsing Machine Vision](https://www.jstage.jst.go.jp/article/jsam1937/62/2/62_2_41/_pdf)
