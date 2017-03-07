@@ -35,3 +35,16 @@ This was the case study of a automated weeding system for potatos. The important
 
 ---
 
+#[Hough-transform-based vision algorithm for crop row detection of an automated agricultural vehicle](http://journals.sagepub.com/doi/abs/10.1243/095440705X34667)
+
+---
+
+#[A vision based row detection system for sugar beet](http://www.sciencedirect.com/science/article/pii/S0168169907001615)
+
+---
+
+#[Crop Row Detection in Maize Fields Inspired on the Human Visual Perception](https://www.hindawi.com/journals/tswj/2012/484390/abs/)
+
+---
+
+#[Crop-row detection using Hough transform based on connected component labeling](https://dl.sciencesocieties.org/publications/tcsae/abstracts/2007/3/2007.3.030)
