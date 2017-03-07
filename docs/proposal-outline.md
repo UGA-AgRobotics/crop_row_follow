@@ -10,6 +10,8 @@ Make CV system that allows robot to line up and follow crop rows.
 #Problem Statement
 ###Background
 
+####Hough Transform
+[video explanation](https://www.youtube.com/watch?v=uDB2qGqnQ1g)
 
 #Research Plan
 
