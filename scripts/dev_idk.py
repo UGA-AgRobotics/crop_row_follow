@@ -63,3 +63,10 @@ plt.imshow(image)
 # plt.imshow(edges, cmap='gray')
 
 plt.show()
+
+
+
+
+########################################################
+
+
