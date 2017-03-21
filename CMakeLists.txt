@@ -9,7 +9,6 @@ project(crop_row_follow)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   rospy
-  dynamic_reconfigure
 )
 
 ## System dependencies are found with CMake's conventions
@@ -86,9 +85,6 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * uncomment the "generate_dynamic_reconfigure_options" section below
 ##     and list every .cfg file to be processed
 
-generate_dynamic_reconfigure_options(
-   cfg/vision.cfg
-)
 
 ###################################
 ## catkin specific configuration ##
