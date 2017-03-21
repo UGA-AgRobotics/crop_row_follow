@@ -1,9 +1,10 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import cv2
 import numpy as np
 import rospy
-
+from dynamic_reconfigure.server import Server
+from vision.cfg import VisionConfig
 
 def vison_stuff():
     image = cv2.imread('../img/peanut_high.jpg', cv2.IMREAD_COLOR)
@@ -63,12 +64,16 @@ def vison_stuff():
     #
     # plt.show()
 
+def callback(config, level):
+    rospy.loginfo('test')
+    return config
+
 def test():
     rospy.init_node('crop_row_follow', anonymous=True)
+    srv = Server(VisionConfig, callback)
     rate = rospy.Rate(1)
     while not rospy.is_shutdown():
-        print 'test'
-        rospy.sleep()
+        rate.sleep()
 
 
 if __name__ == '__main__':
