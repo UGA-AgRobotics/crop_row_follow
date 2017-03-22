@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 
+
 OK = 10
 CK = 20
 hough_thresh = 250
