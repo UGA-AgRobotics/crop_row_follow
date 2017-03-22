@@ -12,7 +12,7 @@ col = 150
 row = 580
 
 image_raw = cv2.imread('../img/test1.png', cv2.IMREAD_COLOR)
-image = image_raw[col:col+300, row:row+200]
+image = image_raw[col:col+350, row:row+250]
 # blur the image to get rid of some of that noise
 blur = cv2.GaussianBlur(image, (5, 5), 10)
 # break image into blue, green, red

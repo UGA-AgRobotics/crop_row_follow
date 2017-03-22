@@ -8,13 +8,17 @@ from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import CompressedImage, Image
 
 
-def crop_line_image(image):
+def crop_line_image(image_raw):
     OK = 20
     CK = 20
-    hough_thresh = 700
-    hough_min_line = 600
-    hough_max_gap = 50
+    hough_thresh = 220
+    hough_min_line = 100
+    hough_max_gap = 100
 
+    col = 200
+    row = 500
+
+    image = image_raw[col:col + 500, row:row + 400]
     # blur the image to get rid of some of that noise
     blur = cv2.GaussianBlur(image, (5, 5), 10)
     # break image into blue, green, red
@@ -42,7 +46,7 @@ def crop_line_image(image):
             count = 0
             for x1, y1, x2, y2 in lines[x]:
                 angle = math.atan2(y1-y2, x1-x2) * (180 / math.pi)
-                if 180 > angle > 0:
+                if 135 > angle > 45:
                     cv2.line(hough_image, (x1, y1), (x2, y2), (0, 0, 255), 2)
                     count += 1
                 else:
@@ -51,7 +55,7 @@ def crop_line_image(image):
     else:
         rospy.logwarn('No lines detected')
 
-    return th
+    return hough_image
 
 
 class ImgProc(object):
@@ -65,7 +69,7 @@ class ImgProc(object):
             img = self.bridge.compressed_imgmsg_to_cv2(data)
             lines_img = crop_line_image(img)
             if lines_img is not None:
-                self.img_pub.publish(self.bridge.cv2_to_imgmsg(lines_img, 'mono8'))
+                self.img_pub.publish(self.bridge.cv2_to_imgmsg(lines_img, 'bgr8'))
             else:
                 rospy.loginfo('No Image')
         except CvBridgeError as e:
