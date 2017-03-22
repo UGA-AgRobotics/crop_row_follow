@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 import rospy
 from cv_bridge import CvBridge, CvBridgeError
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import CompressedImage, Image
 
 
 def crop_line_image(image):
@@ -36,22 +36,22 @@ def crop_line_image(image):
     else:
         rospy.logwarn('No lines detected')
 
-    return hough_image
+    return th
 
 
 class ImgProc:
 
     def __init__(self):
         self.img_pub = rospy.Publisher('crop_rows', Image, queue_size=10)
-        self.img_sub = rospy.Subscriber('crop_row_images', Image, self.crop_image_cb)
+        self.img_sub = rospy.Subscriber('camera/image_color/compressed', CompressedImage, self.crop_image_cb)
         self.bridge = CvBridge()
 
     def crop_image_cb(self, data):
         try:
-            img = self.bridge.imgmsg_to_cv2(data)
+            img = self.bridge.compressed_imgmsg_to_cv2(data)
             lines_img = crop_line_image(img)
             if lines_img is not None:
-                self.img_pub.publish(self.bridge.cv2_to_imgmsg(lines_img, 'bgr8'))
+                self.img_pub.publish(self.bridge.cv2_to_imgmsg(lines_img, 'mono8'))
             else:
                 rospy.loginfo('No Image')
         except CvBridgeError as e:
