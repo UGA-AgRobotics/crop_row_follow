@@ -39,26 +39,30 @@ def crop_line_image(image):
     return hough_image
 
 
+class ImgProc:
+
+    def __init__(self):
+        self.img_pub = rospy.Publisher('crop_rows', Image, queue_size=10)
+        self.img_sub = rospy.Subscriber('crop_row_images', Image, self.crop_image_cb)
+        self.bridge = CvBridge()
+
+    def crop_image_cb(self, data):
+        try:
+            img = self.bridge.imgmsg_to_cv2(data)
+            lines_img = crop_line_image(img)
+            if lines_img is not None:
+                self.img_pub.publish(self.bridge.cv2_to_imgmsg(lines_img, 'bgr8'))
+            else:
+                rospy.loginfo('No Image')
+        except CvBridgeError as e:
+            print e
+
+
 def driver():
     rospy.init_node('crop_row_follow', anonymous=True)
-
-    img_pub = rospy.Publisher('test_image', Image, queue_size=10)
-    img_sub = rospy.Subscriber('crop_row_images', Image, crop_image_cb)
-    bridge = CvBridge()
+    ImgProc()
     while not rospy.is_shutdown():
         rospy.spin()
-
-def crop_image_cb(data):
-    try:
-        # ros is not running in the directory so we need to give it the full path
-        img =
-        lines_img =
-        if lines_img is not None:
-            img_pub.publish(bridge.cv2_to_imgmsg(img, 'bgr8'))
-        else:
-            rospy.loginfo('No Image')
-    except CvBridgeError as e:
-        print e
 
 
 if __name__ == '__main__':
