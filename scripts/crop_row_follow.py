@@ -3,6 +3,7 @@
 import cv2
 import numpy as np
 import rospy
+import math
 from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import CompressedImage, Image
 
@@ -34,13 +35,19 @@ def crop_line_image(image):
     # deep copy the image for Hough
     hough_image = image
     # find the Hough lines using the PPHT method
-    lines = cv2.HoughLinesP(image=th, rho=1, theta=np.pi / 180, threshold=hough_thresh, minLineLength=hough_min_line,
+    lines = cv2.HoughLinesP(image=th, rho=1, theta=np.pi / 100, threshold=hough_thresh, minLineLength=hough_min_line,
                             maxLineGap=hough_max_gap)
     if lines is not None:
         for x in range(0, len(lines)):
+            count = 0
             for x1, y1, x2, y2 in lines[x]:
-                cv2.line(hough_image, (x1, y1), (x2, y2), (0, 0, 255), 2)
-        rospy.loginfo('#Lines:%d', len(lines))
+                angle = math.atan2(y1-y2, x1-x2) * (180 / math.pi)
+                if 180 > angle > 0:
+                    cv2.line(hough_image, (x1, y1), (x2, y2), (0, 0, 255), 2)
+                    count += 1
+                else:
+                    pass
+        rospy.loginfo('Lines %d', len(lines))
     else:
         rospy.logwarn('No lines detected')
 
