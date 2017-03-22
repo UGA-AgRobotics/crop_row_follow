@@ -39,7 +39,8 @@ def crop_line_image(image):
     if lines is not None:
         for x in range(0, len(lines)):
             for x1, y1, x2, y2 in lines[x]:
-                cv2.line(hough_image, (x1, y1), (x2, y2), (255, 0, 0), 10)
+                cv2.line(hough_image, (x1, y1), (x2, y2), (0, 0, 255), 2)
+        cv2.putText(hough_image, str(len(lines)), (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 0), 2)
     else:
         rospy.logwarn('No lines detected')
 
@@ -48,7 +49,7 @@ def crop_line_image(image):
 
 class ImgProc(object):
     def __init__(self):
-        self.img_pub = rospy.Publisher('crop_rows', Image, queue_size=10)
+        self.img_pub = rospy.Publisher('crop_rows', Image, queue_size=1)
         self.img_sub = rospy.Subscriber('camera/image_color/compressed', CompressedImage, self.crop_image_cb)
         self.bridge = CvBridge()
 
