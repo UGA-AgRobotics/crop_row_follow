@@ -40,7 +40,7 @@ def crop_line_image(image):
         for x in range(0, len(lines)):
             for x1, y1, x2, y2 in lines[x]:
                 cv2.line(hough_image, (x1, y1), (x2, y2), (0, 0, 255), 2)
-        cv2.putText(hough_image, str(len(lines)), (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 0), 2)
+        rospy.loginfo('#Lines:%d', len(lines))
     else:
         rospy.logwarn('No lines detected')
 
