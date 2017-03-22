@@ -6,8 +6,8 @@ import rospy
 from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import Image
 
-def vison_stuff():
-    image = cv2.imread('/home/brad/workspaces/crop-follow/src/crop_row_follow/img/peanut_high.jpg', cv2.IMREAD_COLOR)
+
+def crop_line_image(image):
     # blur the image to get rid of some of that noise
     blur = cv2.GaussianBlur(image, (5, 5), 7)
     # break image into blue, green, red
@@ -34,33 +34,35 @@ def vison_stuff():
             for x1, y1, x2, y2 in lines[x]:
                 cv2.line(hough_image, (x1, y1), (x2, y2), (255, 0, 0), 10)
     else:
-        print 'No lines'
+        rospy.logwarn('No lines detected')
 
     return hough_image
 
 
-def test():
+def driver():
     rospy.init_node('crop_row_follow', anonymous=True)
 
     img_pub = rospy.Publisher('test_image', Image, queue_size=10)
+    img_sub = rospy.Subscriber('crop_row_images', Image, crop_image_cb)
     bridge = CvBridge()
-
-    rate = rospy.Rate(1)
     while not rospy.is_shutdown():
-        try:
-            # ros is not running in the directory so we need to give it the full path
-            img = vison_stuff()
-            if img is not None:
-                img_pub.publish(bridge.cv2_to_imgmsg(img, 'bgr8'))
-            else:
-                rospy.loginfo('No Image')
-        except CvBridgeError as e:
-            print e
-        rate.sleep()
+        rospy.spin()
+
+def crop_image_cb(data):
+    try:
+        # ros is not running in the directory so we need to give it the full path
+        img =
+        lines_img =
+        if lines_img is not None:
+            img_pub.publish(bridge.cv2_to_imgmsg(img, 'bgr8'))
+        else:
+            rospy.loginfo('No Image')
+    except CvBridgeError as e:
+        print e
 
 
 if __name__ == '__main__':
     try:
-        test()
+        driver()
     except rospy.ROSInterruptException:
         pass
