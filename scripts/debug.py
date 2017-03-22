@@ -2,6 +2,10 @@ import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 
+class RowDetector(object):
+
+    def __init__(self):
+
 
 OK = 10
 CK = 20
