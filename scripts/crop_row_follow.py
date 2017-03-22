@@ -39,7 +39,7 @@ def crop_line_image(image):
     return th
 
 
-class ImgProc:
+class ImgProc(object):
 
     def __init__(self):
         self.img_pub = rospy.Publisher('crop_rows', Image, queue_size=10)
