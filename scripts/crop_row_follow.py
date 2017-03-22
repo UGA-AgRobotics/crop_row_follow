@@ -15,10 +15,10 @@ def crop_line_image(image_raw):
     hough_min_line = 100
     hough_max_gap = 100
 
-    col = 200
+    col = 100
     row = 500
 
-    image = image_raw[col:col + 500, row:row + 400]
+    image = image_raw[col:col + 600, row:row + 400]
     # blur the image to get rid of some of that noise
     blur = cv2.GaussianBlur(image, (5, 5), 10)
     # break image into blue, green, red

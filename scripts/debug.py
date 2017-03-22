@@ -62,8 +62,14 @@ plt.subplot(235)
 plt.title('Otsu')
 plt.imshow(th, cmap='gray')
 
+
+image_raw[col:col+350, row:row+250] = hough_image
+center = (image_raw.shape[1]/2, image_raw.shape[0]/2)
+cv2.circle(image_raw, center, 50, (0, 255, 0), 5)
+cv2.line(image_raw, pt1=(center[0], 0), pt2=(center[0], image_raw.shape[0]), thickness=3, color=(0, 255, 0))
+cv2.line(image_raw, pt1=(0, center[1]), pt2=(image_raw.shape[1], center[1]), thickness=3, color=(0, 255, 0))
 plt.subplot(236)
 plt.title('Lines')
-plt.imshow(hough_image, cmap='gray')
+plt.imshow(image_raw, cmap='gray')
 
 plt.show()
