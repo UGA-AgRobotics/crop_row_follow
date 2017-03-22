@@ -4,13 +4,17 @@ from matplotlib import pyplot as plt
 
 OK = 10
 CK = 20
-hough_thresh = 700
-hough_min_line = 600
+hough_thresh = 250
+hough_min_line = 100
 hough_max_gap = 50
 
-image = cv2.imread('../img/test1.png', cv2.IMREAD_COLOR)
+col = 150
+row = 580
+
+image_raw = cv2.imread('../img/test1.png', cv2.IMREAD_COLOR)
+image = image_raw[col:col+300, row:row+200]
 # blur the image to get rid of some of that noise
-blur = cv2.GaussianBlur(image, (5, 5), 7)
+blur = cv2.GaussianBlur(image, (5, 5), 10)
 # break image into blue, green, red
 b, g, r = cv2.split(blur)
 # increase the amount of green relative to red and blue
