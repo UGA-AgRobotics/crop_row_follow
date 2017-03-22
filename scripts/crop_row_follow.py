@@ -8,6 +8,12 @@ from sensor_msgs.msg import CompressedImage, Image
 
 
 def crop_line_image(image):
+    OK = 10
+    CK = 20
+    hough_thresh = 700
+    hough_min_line = 600
+    hough_max_gap = 50
+
     # blur the image to get rid of some of that noise
     blur = cv2.GaussianBlur(image, (5, 5), 7)
     # break image into blue, green, red
@@ -15,8 +21,8 @@ def crop_line_image(image):
     # increase the amount of green relative to red and blue
     I = 2 * g - r - b
     # define the kernels for opening and closing
-    open_k = np.ones((40, 40), np.uint8)
-    close_k = np.ones((60, 60), np.uint8)
+    open_k = np.ones((OK, OK), np.uint8)
+    close_k = np.ones((CK, CK), np.uint8)
     # close the image to get rid of the small noise
     closed = cv2.morphologyEx(I, cv2.MORPH_CLOSE, close_k)
     # open to fill in any gaps
@@ -24,11 +30,12 @@ def crop_line_image(image):
     # threshold to binary with Otsu
     rt, th = cv2.threshold(opened, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
     # invert because Hough looks for 255
-    th = 255-th
+    th = 255 - th
     # deep copy the image for Hough
     hough_image = image
     # find the Hough lines using the PPHT method
-    lines = cv2.HoughLinesP(image=th, rho=1, theta=np.pi / 180, threshold=2500, minLineLength=600, maxLineGap=200)
+    lines = cv2.HoughLinesP(image=th, rho=1, theta=np.pi / 180, threshold=hough_thresh, minLineLength=hough_min_line,
+                            maxLineGap=hough_max_gap)
     if lines is not None:
         for x in range(0, len(lines)):
             for x1, y1, x2, y2 in lines[x]:
@@ -40,7 +47,6 @@ def crop_line_image(image):
 
 
 class ImgProc(object):
-
     def __init__(self):
         self.img_pub = rospy.Publisher('crop_rows', Image, queue_size=10)
         self.img_sub = rospy.Subscriber('camera/image_color/compressed', CompressedImage, self.crop_image_cb)
