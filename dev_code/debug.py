@@ -31,12 +31,11 @@ class VisionCV2(CropRowFind):
         self.hough_params = (1, 180, 250, 100, 50)
 
     def find_rows(self, data):
-        img = np.matrix.copy(data)
-        self.roi(img)
-        self.blur(img)
-        self.egvi(img)
-        self.close_open(img)
-        self.threshold(img)
+        img = self.roi(data)
+        img = self.blur(img)
+        img = self.egvi(img)
+        img = self.close_open(img)
+        img = self.threshold(img)
         return self.lines(img)
 
     def roi(self, img):
@@ -57,6 +56,7 @@ class VisionCV2(CropRowFind):
         return cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
     def lines(self, img):
+
         return cv2.HoughLinesP(image=img, rho=self.hough_params[0], theta=np.pi / self.hough_params[1],
                                threshold=self.hough_params[2], minLineLength=self.hough_params[3],
                                maxLineGap=self.hough_params[4])
