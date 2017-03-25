@@ -17,14 +17,12 @@ class CropRowFind(object):
             for x in range(0, len(self.rows)):
                 for x1, y1, x2, y2 in self.rows[x]:
                     cv2.line(img, (x1, y1), (x2, y2), (255, 0, 0), 10)
-        else:
-            print "No rows"
-        return
+        return img
 
 
 class VisionCV2(CropRowFind):
     def __init__(self):
-        self.window = (150, 250, 580, 680)
+        self.window = (150, 450, 580, 880)
         self.sigma = 10
         self.gauss_kernel = (5, 5)
         self.close_open_kernels = ((20, 20), (10, 10))
@@ -119,5 +117,6 @@ class VisionCV2(CropRowFind):
 
 crf = CropRowFind()
 image = cv2.imread('../img/test1.png', cv2.IMREAD_COLOR)
-crf.find_rows(image)
+print crf.find_rows(image)
 plt.imshow(crf.draw_rows(image))
+plt.show()
