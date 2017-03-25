@@ -2,11 +2,6 @@ import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 
-class RowDetector(object):
-
-    def __init__(self):
-
-
 OK = 10
 CK = 20
 hough_thresh = 250
@@ -16,30 +11,58 @@ hough_max_gap = 50
 col = 150
 row = 580
 
+
+class CropRowFind(object):
+    def __init__(self):
+        self.input_image = None
+
+    def roi(self, img, window):
+        return img[window[0]:window[1], window[2]:window[3]]
+
+    def blur(self, img, sigma=10, kernel=(5, 5)):
+        return cv2.GaussianBlur(img, kernel, sigma)
+
+    def EGVI(self, img):
+        b, g, r = cv2.split(img)
+        return 2 * g - r - b
+
+    def open_close(self, img, close_kernel=np.ones((20, 20), np.uint8), open_kernel=np.ones((10, 10), np.uint8)):
+        closed = cv2.morphologyEx(img, cv2.MORPH_CLOSE, close_kernel)
+        return cv2.morphologyEx(closed, cv2.MORPH_OPEN, open_kernel)
+
+    def threshold(self, img):
+        return cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+    def lines(self, img, min_line=100, max_gap=50, vote_threshold=250):
+        return cv2.HoughLinesP(image=img, rho=1, theta=np.pi / 180, threshold=vote_threshold, minLineLength=min_line,
+                               maxLineGap=max_gap)
+
+
 image_raw = cv2.imread('../img/test1.png', cv2.IMREAD_COLOR)
-image = image_raw[col:col+350, row:row+250]
-# blur the image to get rid of some of that noise
-blur = cv2.GaussianBlur(image, (5, 5), 10)
-# break image into blue, green, red
-b, g, r = cv2.split(blur)
-# increase the amount of green relative to red and blue
-I = 2 * g - r - b
-# define the kernels for opening and closing
-open_k = np.ones((OK, OK), np.uint8)
-close_k = np.ones((CK, CK), np.uint8)
-# close the image to get rid of the small noise
-closed = cv2.morphologyEx(I, cv2.MORPH_CLOSE, close_k)
-# open to fill in any gaps
-opened = cv2.morphologyEx(closed, cv2.MORPH_OPEN, open_k)
-# threshold to binary with Otsu
-rt, th = cv2.threshold(opened, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-# invert because Hough looks for 255
-th = 255 - th
-# deep copy the image for Hough
-hough_image = np.matrix.copy(image)
-# find the Hough lines using the PPHT method
-lines = cv2.HoughLinesP(image=th, rho=1, theta=np.pi / 180, threshold=hough_thresh, minLineLength=hough_min_line,
-                        maxLineGap=hough_max_gap)
+
+# image = image_raw[col:col + 350, row:row + 250]
+# # blur the image to get rid of some of that noise
+# blur = cv2.GaussianBlur(image, (5, 5), 10)
+# # break image into blue, green, red
+# b, g, r = cv2.split(blur)
+# # increase the amount of green relative to red and blue
+# I = 2 * g - r - b
+# # define the kernels for opening and closing
+# open_k = np.ones((OK, OK), np.uint8)
+# close_k = np.ones((CK, CK), np.uint8)
+# # close the image to get rid of the small noise
+# closed = cv2.morphologyEx(I, cv2.MORPH_CLOSE, close_k)
+# # open to fill in any gaps
+# opened = cv2.morphologyEx(closed, cv2.MORPH_OPEN, open_k)
+# # threshold to binary with Otsu
+# rt, th = cv2.threshold(opened, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+# # invert because Hough looks for 255
+# th = 255 - th
+# # deep copy the image for Hough
+# hough_image = np.matrix.copy(image)
+# # find the Hough lines using the PPHT method
+# lines = cv2.HoughLinesP(image=th, rho=1, theta=np.pi / 180, threshold=hough_thresh, minLineLength=hough_min_line,
+#                         maxLineGap=hough_max_gap)
 if lines is not None:
     for x in range(0, len(lines)):
         for x1, y1, x2, y2 in lines[x]:
@@ -67,9 +90,8 @@ plt.subplot(235)
 plt.title('Otsu')
 plt.imshow(th, cmap='gray')
 
-
-image_raw[col:col+350, row:row+250] = hough_image
-center = (image_raw.shape[1]/2, image_raw.shape[0]/2)
+image_raw[col:col + 350, row:row + 250] = hough_image
+center = (image_raw.shape[1] / 2, image_raw.shape[0] / 2)
 cv2.circle(image_raw, center, 50, (0, 255, 0), 5)
 cv2.line(image_raw, pt1=(center[0], 0), pt2=(center[0], image_raw.shape[0]), thickness=3, color=(0, 255, 0))
 cv2.line(image_raw, pt1=(0, center[1]), pt2=(image_raw.shape[1], center[1]), thickness=3, color=(0, 255, 0))
@@ -78,3 +100,6 @@ plt.title('Lines')
 plt.imshow(image_raw, cmap='gray')
 
 plt.show()
+
+if __name__ == '__main__':
+    test = CropRowFind()
