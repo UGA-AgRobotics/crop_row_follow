@@ -102,7 +102,7 @@ class VisionCV2(CropRowFind):
                 for x1, y1, x2, y2 in l_line:
                     angle = int(math.atan2(y1 - y2, x1 - x2) * (180 / math.pi))
                     if 135 > angle > 45:
-                        l.append([x1, y1, x2, y2])
+                        l.append([x1+self.x1, y1+self.y1, x2+self.x2, y2+self.y2])
                     else:
                         pass
         else:
