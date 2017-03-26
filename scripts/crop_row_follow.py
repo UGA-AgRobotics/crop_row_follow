@@ -21,7 +21,7 @@ class CropRowFind(object):
         if self.rows is not None:
             for x in range(0, len(self.rows)):
                 for x1, y1, x2, y2 in self.rows[x]:
-                    cv2.line(img, (x1, y1), (x2, y2), (255, 0, 0), 10)
+                    cv2.line(img, (x1, y1), (x2, y2), (0, 255, 0), 10)
         return img
 
 
