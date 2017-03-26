@@ -33,8 +33,8 @@ class VisionCV2(CropRowFind):
             window = rospy.get_param('roi')
             self.x1, self.x2, self.y1, self.y2 = window['x1'], window['x2'], window['y1'], window['y2']
         else:
-            self.x1, self.x2, self.y1, self.y2 = 150, 450, 580, 880
-            rospy.set_param('roi', {'x1': self.x1, 'x2': self.x2, 'y1': self.y1, 'y2': self.y2})
+            self.x1, self.x2, self.y1, self.y2 = 400, 400, 1000, 880
+            rospy.set_param('roi', {'x1': self.x1, 'y1': self.y1, 'x2': self.x2, 'y2': self.y2})
 
         if rospy.has_param('gaussian_blur'):
             self.sigma = rospy.get_param('gaussian_blur/sigma')
@@ -76,7 +76,7 @@ class VisionCV2(CropRowFind):
         return self.lines(img)
 
     def roi(self, img):
-        return img[self.x1:self.x2, self.y1:self.y2]
+        return img[self.y1:self.y2, self.x1:self.x2]
 
     def blur(self, img):
         return cv2.GaussianBlur(img, self.gauss_kernel, self.sigma)
@@ -102,7 +102,7 @@ class VisionCV2(CropRowFind):
                 for x1, y1, x2, y2 in l_line:
                     angle = int(math.atan2(y1 - y2, x1 - x2) * (180 / math.pi))
                     if 135 > angle > 45:
-                        l.append([x1+self.x1, y1+self.y1, x2+self.x2, y2+self.y2])
+                        l.append([x1, y1, x2, y2])
                     else:
                         pass
         else:

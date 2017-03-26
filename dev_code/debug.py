@@ -22,7 +22,8 @@ class CropRowFind(object):
 
 class VisionCV2(CropRowFind):
     def __init__(self):
-        self.window = (150, 450, 580, 880)
+        # x1, y1, x2, y2
+        self.window = (400, 400, 1000, 880)
         self.sigma = 10
         self.gauss_kernel = (5, 5)
         self.close_open_kernels = ((20, 20), (10, 10))
@@ -30,6 +31,7 @@ class VisionCV2(CropRowFind):
 
     def find_rows(self, data):
         img = self.roi(data)
+        plt.imshow(img)
         img = self.blur(img)
         img = self.egvi(img)
         img = self.close_open(img)
@@ -37,7 +39,7 @@ class VisionCV2(CropRowFind):
         return self.lines(img)
 
     def roi(self, img):
-        return img[self.window[0]:self.window[1], self.window[2]:self.window[3]]
+        return img[self.window[1]:self.window[3], self.window[0]:self.window[2]]
 
     def blur(self, img):
         return cv2.GaussianBlur(img, self.gauss_kernel, self.sigma)
@@ -118,5 +120,6 @@ class VisionCV2(CropRowFind):
 crf = CropRowFind()
 image = cv2.imread('../img/test1.png', cv2.IMREAD_COLOR)
 print crf.find_rows(image)
-plt.imshow(crf.draw_rows(image))
+plt.figure(2)
+plt.imshow(cv2.rectangle(image, (150, 580),(450, 880), (0,0,255), 3))
 plt.show()
