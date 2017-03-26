@@ -33,25 +33,26 @@ class VisionCV2(CropRowFind):
         else:
             self.window = (150, 450, 580, 880)
 
+
         if rospy.has_param('sigma'):
             self.sigma = rospy.get_param('sigma')
         else:
             self.sigma = 10
 
         if rospy.has_param('gauss_kernel'):
-            self.gauss_kernel = rospy.get_param('gauss_kernel')
+            self.gauss_kernel = tuple(rospy.get_param('gauss_kernel'))
         else:
             self.gauss_kernel = (5, 5)
 
         if rospy.has_param('close_kernel') and rospy.has_param('open_kernel'):
-            close_kernel = rospy.get_param('close_kernel')
-            open_kernel = rospy.get_param('open_kernel')
+            close_kernel = tuple(rospy.get_param('close_kernel'))
+            open_kernel = tuple(rospy.get_param('open_kernel'))
             self.close_open_kernels = (close_kernel, open_kernel)
         else:
             self.close_open_kernels = ((20, 20), (10, 10))
 
         if rospy.has_param('/hough_params'):
-            self.hough_params = rospy.get_param('hough_params')
+            self.hough_params = tuple(rospy.get_param('hough_params'))
         else:
             self.hough_params = (1, 180, 250, 100, 50)
 
