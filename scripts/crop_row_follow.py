@@ -3,7 +3,6 @@
 import cv2
 import numpy as np
 import rospy
-import math
 from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import CompressedImage, Image
 
@@ -23,7 +22,7 @@ class CropRowFind(object):
         if self.rows is not None:
             for x in range(0, len(self.rows)):
                 for x1, y1, x2, y2 in self.rows[x]:
-                    cv2.line(img, (x1, y1), (x2, y2), (0, 255, 0), 10)
+                    cv2.line(img, (x1, y1), (x2, y2), (0, 0, 255), 10)
         return img
 
 
@@ -51,7 +50,7 @@ class VisionCV2(CropRowFind):
         else:
             self.close_open_kernels = ((20, 20), (10, 10))
 
-        if rospy.has_param('hough_params'):
+        if rospy.has_param('/hough_params'):
             self.hough_params = rospy.get_param('hough_params')
         else:
             self.hough_params = (1, 180, 250, 100, 50)
