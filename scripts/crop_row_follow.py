@@ -10,6 +10,7 @@ from sensor_msgs.msg import CompressedImage, Image
 
 class CropRowFind(object):
     def __init__(self):
+        # TODO make class from type given by string
         self.vision = VisionCV2()
         self.rows = None
 
@@ -27,11 +28,32 @@ class CropRowFind(object):
 
 class VisionCV2(CropRowFind):
     def __init__(self):
-        self.window = (150, 450, 580, 880)
-        self.sigma = 10
-        self.gauss_kernel = (5, 5)
-        self.close_open_kernels = ((20, 20), (10, 10))
-        self.hough_params = (1, 180, 250, 100, 50)
+        if rospy.has_param('roi'):
+            self.window = rospy.get_param('roi')
+        else:
+            self.window = (150, 450, 580, 880)
+
+        if rospy.has_param('sigma'):
+            self.sigma = rospy.get_param('sigma')
+        else:
+            self.sigma = 10
+
+        if rospy.has_param('gauss_kernel'):
+            self.gauss_kernel = rospy.get_param('gauss_kernel')
+        else:
+            self.gauss_kernel = (5, 5)
+
+        if rospy.has_param('close_kernel') and rospy.has_param('open_kernel'):
+            close_kernel = rospy.get_param('close_kernel')
+            open_kernel = rospy.get_param('open_kernel')
+            self.close_open_kernels = (close_kernel, open_kernel)
+        else:
+            self.close_open_kernels = ((20, 20), (10, 10))
+
+        if rospy.has_param('hough_params'):
+            self.hough_params = rospy.get_param('hough_params')
+        else:
+            self.hough_params = (1, 180, 250, 100, 50)
 
     def find_rows(self, data):
         # img = self.roi(data)
