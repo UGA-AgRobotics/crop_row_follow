@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
-import cv2
+import math
 import numpy as np
+
+import cv2
 import rospy
 from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import CompressedImage, Image
@@ -19,59 +21,62 @@ class CropRowFind(object):
         return self.rows
 
     def draw_rows(self, img):
-        if self.rows is not None:
-            for x in range(0, len(self.rows)):
-                for x1, y1, x2, y2 in self.rows[x]:
-                    cv2.line(img, (x1, y1), (x2, y2), (0, 0, 255), 10)
+        if self.rows is not None and len(self.rows) > 1:
+            for x1, y1, x2, y2 in self.rows:
+                cv2.line(img, (x1, y1), (x2, y2), (0, 0, 255), 10)
         return img
 
 
 class VisionCV2(CropRowFind):
     def __init__(self):
         if rospy.has_param('roi'):
-            self.window = rospy.get_param('roi')
+            window = rospy.get_param('roi')
+            self.x1, self.x2, self.y1, self.y2 = window['x1'], window['x2'], window['y1'], window['y2']
         else:
-            self.window = (150, 450, 580, 880)
+            self.x1, self.x2, self.y1, self.y2 = 150, 450, 580, 880
+            rospy.set_param('roi', {'x1': self.x1, 'x2': self.x2, 'y1': self.y1, 'y2': self.y2})
 
-
-        if rospy.has_param('sigma'):
-            self.sigma = rospy.get_param('sigma')
+        if rospy.has_param('gaussian_blur'):
+            self.sigma = rospy.get_param('gaussian_blur/sigma')
+            self.gauss_kernel = tuple(rospy.get_param('gaussian_blur/kernel'))
         else:
             self.sigma = 10
-
-        if rospy.has_param('gauss_kernel'):
-            self.gauss_kernel = tuple(rospy.get_param('gauss_kernel'))
-        else:
             self.gauss_kernel = (5, 5)
+            rospy.set_param('gauss_blur/sigma', self.sigma)
+            rospy.set_param('gauss_blur/kernel', list(self.gauss_kernel))
 
-        if rospy.has_param('close_kernel') and rospy.has_param('open_kernel'):
-            close_kernel = tuple(rospy.get_param('close_kernel'))
-            open_kernel = tuple(rospy.get_param('open_kernel'))
+        if rospy.has_param('morph'):
+            close_kernel = tuple(rospy.get_param('morph/close_kernel'))
+            open_kernel = tuple(rospy.get_param('morph/open_kernel'))
             self.close_open_kernels = (close_kernel, open_kernel)
         else:
             self.close_open_kernels = ((20, 20), (10, 10))
+            rospy.set_param('morph/close_kernel', list(self.close_open_kernels[0]))
+            rospy.set_param('morph/open_kernel', list(self.close_open_kernels[1]))
 
-        if rospy.has_param('/hough_params'):
-            self.hough_params = tuple(rospy.get_param('hough_params'))
+        if rospy.has_param('hough'):
+            self.hough_params = rospy.get_param('hough')
         else:
-            self.hough_params = (1, 180, 250, 100, 50)
+            self.hough_params = {'rho': 1, 'theta': 180, 'threshold': 250, 'minLineLength': 100, 'maxLineGap': 50,
+                                 'maxAngle': 135, 'minAngle': 45}
+            rospy.set_param('hough', self.hough_params)
 
-        rospy.loginfo('roi: %s', str(self.window))
+        rospy.loginfo('roi: %s', str(rospy.get_param('roi')))
         rospy.loginfo('sigma: %s', str(self.sigma))
         rospy.loginfo('gaussian kernel: %s', str(self.gauss_kernel))
         rospy.loginfo('close and open kernel: %s', str(self.close_open_kernels))
         rospy.loginfo('hough parameter: %s', str(self.hough_params))
 
     def find_rows(self, data):
-        # img = self.roi(data)
-        img = self.blur(data)
+        img = self.roi(data)
+        img = self.blur(img)
         img = self.egvi(img)
         img = self.close_open(img)
         rt, img = self.threshold(img)
         return self.lines(img)
 
     def roi(self, img):
-        return img[self.window[0]:self.window[1], self.window[2]:self.window[3]]
+        return img[self.x1:self.x2, self.y1:self.y2]
 
     def blur(self, img):
         return cv2.GaussianBlur(img, self.gauss_kernel, self.sigma)
@@ -88,9 +93,21 @@ class VisionCV2(CropRowFind):
         return cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
     def lines(self, img):
-        return cv2.HoughLinesP(image=img, rho=self.hough_params[0], theta=np.pi / self.hough_params[1],
-                               threshold=self.hough_params[2], minLineLength=self.hough_params[3],
-                               maxLineGap=self.hough_params[4])
+        l_temp = cv2.HoughLinesP(img, self.hough_params['rho'], np.pi / self.hough_params['theta'],
+                                 self.hough_params['threshold'], self.hough_params['minLineLength'],
+                                 self.hough_params['maxLineGap'])
+        l = []
+        if l_temp is not None:
+            for l_line in l_temp:
+                for x1, y1, x2, y2 in l_line:
+                    angle = int(math.atan2(y1 - y2, x1 - x2) * (180 / math.pi))
+                    if 135 > angle > 45:
+                        l.append([x1, y1, x2, y2])
+                    else:
+                        pass
+        else:
+            l = None
+        return l
 
 
 class CropRowFollow(object):
