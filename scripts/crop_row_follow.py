@@ -11,6 +11,7 @@ from sensor_msgs.msg import CompressedImage, Image
 class CropRowFind(object):
     def __init__(self):
         # TODO make class from type given by string
+        rospy.loginfo('Starting crop row follow vision system...')
         self.vision = VisionCV2()
         self.rows = None
 
@@ -54,6 +55,12 @@ class VisionCV2(CropRowFind):
             self.hough_params = rospy.get_param('hough_params')
         else:
             self.hough_params = (1, 180, 250, 100, 50)
+
+        rospy.loginfo('roi: %s', str(self.window))
+        rospy.loginfo('sigma: %s', str(self.sigma))
+        rospy.loginfo('gaussian kernel: %s', str(self.gauss_kernel))
+        rospy.loginfo('close and open kernel: %s', str(self.close_open_kernels))
+        rospy.loginfo('hough parameter: %s', str(self.hough_params))
 
     def find_rows(self, data):
         # img = self.roi(data)
