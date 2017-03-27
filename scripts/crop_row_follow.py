@@ -94,6 +94,8 @@ class VisionCV2(CropRowFind):
         return cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
     def lines(self, img):
+        maxA = self.hough_params['maxAngle']
+        minA = self.hough_params['minAngle']
         l_temp = cv2.HoughLinesP(img, self.hough_params['rho'], np.pi / self.hough_params['theta'],
                                  self.hough_params['threshold'], self.hough_params['minLineLength'],
                                  self.hough_params['maxLineGap'])
@@ -102,7 +104,7 @@ class VisionCV2(CropRowFind):
             for l_line in l_temp:
                 for x1, y1, x2, y2 in l_line:
                     angle = int(math.atan2(y1 - y2, x1 - x2) * (180 / math.pi))
-                    if 135 > angle > 45:
+                    if maxA > angle > minA:
                         l.append([x1, y1, x2, y2])
                     else:
                         pass
