@@ -20,6 +20,9 @@ class CropRowFind(object):
         self.rows = self.vision.find_rows(data)
         return self.rows
 
+    def visual_debug(self, data):
+        return self.vision.visual_debug(data)
+
     def draw_rows(self, img):
         img = img[self.vision.y1:self.vision.y2, self.vision.x1:self.vision.x2]
         if self.rows is not None and len(self.rows) > 1:
@@ -68,6 +71,7 @@ class VisionCV2(CropRowFind):
         rospy.loginfo('close and open kernel: %s', str(self.close_open_kernels))
         rospy.loginfo('hough parameter: %s', str(self.hough_params))
 
+# TODO clean this up to be more ood
     def find_rows(self, data):
         img = self.roi(data)
         img = self.blur(img)
@@ -75,6 +79,15 @@ class VisionCV2(CropRowFind):
         img = self.close_open(img)
         rt, img = self.threshold(img)
         return self.lines(img)
+
+    def visual_debug(self, data):
+        debug_imgs = []
+        debug_imgs.append(self.roi(data))
+        debug_imgs.append(self.blur(debug_imgs[0]))
+        debug_imgs.append(self.egvi(debug_imgs[1]))
+        debug_imgs.append(self.close_open(debug_imgs[2]))
+        debug_imgs.append(self.threshold(debug_imgs[3])[1])
+        return debug_imgs
 
     def roi(self, img):
         return img[self.y1:self.y2, self.x1:self.x2]
