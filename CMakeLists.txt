@@ -9,11 +9,10 @@ project(crop_row_follow)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
     rospy
+    roscpp
     message_generation
     sensor_msgs
-    cv_bridge
     std_msgs
-    image_transport
 )
 
 ## System dependencies are found with CMake's conventions
@@ -73,7 +72,7 @@ add_service_files(
 generate_messages(
     DEPENDENCIES
     std_msgs
-    cv_bridge
+    sensor_msgs
 )
 
 ################################################
