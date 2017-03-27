@@ -21,6 +21,7 @@ class CropRowFind(object):
         return self.rows
 
     def draw_rows(self, img):
+        img = img[self.vision.y1:self.vision.y2, self.vision.x1:self.vision.x2]
         if self.rows is not None and len(self.rows) > 1:
             for x1, y1, x2, y2 in self.rows:
                 cv2.line(img, (x1, y1), (x2, y2), (0, 0, 255), 10)
@@ -33,7 +34,7 @@ class VisionCV2(CropRowFind):
             window = rospy.get_param('roi')
             self.x1, self.x2, self.y1, self.y2 = window['x1'], window['x2'], window['y1'], window['y2']
         else:
-            self.x1, self.y1, self.x2, self.y2 = 400, 400, 800, 800
+            self.x1, self.y1, self.x2, self.y2 = 400, 400, 1000, 800
             rospy.set_param('roi', {'x1': self.x1, 'y1': self.y1, 'x2': self.x2, 'y2': self.y2})
 
         if rospy.has_param('gaussian_blur'):
